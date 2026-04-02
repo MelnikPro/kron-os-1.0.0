@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+
+/* ── Панель ── */
+#kron-panel { background-color: #181825; border-bottom: 1px solid #5294E2; }
+
+.panel-button {
+    background: transparent; color: #cdd6f4;
+    border: none; padding: 4px 12px; border-radius: 4px;
+}
+.panel-button:hover { background-color: #5294E2; color: white; }
+
+.clock { color: #cdd6f4; font-family: monospace; font-size: 13px; padding: 0 12px; }
+
+/* ── Taskbar ── */
+.taskbar-item {
+    background-color: #313244; color: #cdd6f4;
+    border: 1px solid #45475a; border-radius: 4px;
+    padding: 2px 10px; margin: 2px; font-size: 12px;
+    min-width: 80px; max-width: 160px;
+}
+.taskbar-item:hover  { background-color: #5294E2; color: white; border-color: #5294E2; }
+.taskbar-active      { background-color: #45475a; border-color: #5294E2; }
+
+/* ── Лаунчер ── */
+#kron-launcher { background-color: #1e1e2e; }
+
+.launcher-search {
+    background-color: #313244; color: #cdd6f4;
+    border: 1px solid #5294E2; border-radius: 8px;
+    padding: 8px 12px; font-size: 15px;
+}
+
+.app-button {
+    background: transparent; color: #cdd6f4;
+    border: none; border-radius: 8px; padding: 8px;
+}
+.app-button:hover { background-color: #5294E2; color: white; }
+
+/* ── Уведомления ── */
+.notification {
+    background-color: #313244; color: #cdd6f4;
+    border: 1px solid #5294E2; border-radius: 8px;
+    padding: 10px 14px; min-width: 300px;
+}
+.notification-title { font-weight: bold; font-size: 13px; }
+.notification-body  { font-size: 12px; color: #a6adc8; }
+.notification-close {
+    background: transparent; border: none;
+    color: #6c7086; padding: 0 4px; font-size: 11px;
+}
+.notification-close:hover { color: #f38ba8; }

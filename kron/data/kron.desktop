@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=KRON
+Comment=KRON Desktop Environment
+Exec=kron
+Type=XSession

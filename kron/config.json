@@ -1,0 +1,11 @@
+{
+  "theme": "dark",
+  "accent_color": "#5294E2",
+  "panel_height": 36,
+  "panel_position": "top",
+  "wallpaper": "",
+  "font": "Sans 10",
+  "icon_theme": "Papirus",
+  "wm": "openbox",
+  "autostart": []
+}
