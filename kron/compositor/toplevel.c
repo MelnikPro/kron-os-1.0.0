@@ -76,7 +76,6 @@ static void on_destroy(struct wl_listener *listener, void *data) {
     wl_list_remove(&toplevel->request_move.link);
     wl_list_remove(&toplevel->request_resize.link);
     wl_list_remove(&toplevel->request_maximize.link);
-    wl_list_remove(&toplevel->request_fullscreen.link);
     wl_list_remove(&toplevel->link);
     free(toplevel);
 }
@@ -110,14 +109,14 @@ static void on_new_xdg_toplevel(struct wl_listener *listener, void *data) {
     toplevel->scene_tree->node.data = toplevel;
     xdg_toplevel->base->data = toplevel->scene_tree;
 
-#define LISTEN(event, cb) toplevel->cb.notify = cb; wl_signal_add(&event, &toplevel->cb)
-    LISTEN(xdg_toplevel->base->surface->events.map,       on_map);
-    LISTEN(xdg_toplevel->base->surface->events.unmap,     on_unmap);
-    LISTEN(xdg_toplevel->base->surface->events.commit,    on_commit);
-    LISTEN(xdg_toplevel->events.destroy,                  on_destroy);
-    LISTEN(xdg_toplevel->events.request_move,             on_request_move);
-    LISTEN(xdg_toplevel->events.request_resize,           on_request_resize);
-    LISTEN(xdg_toplevel->events.request_maximize,         on_request_maximize);
+#define LISTEN(event, field, cb) toplevel->field.notify = cb; wl_signal_add(&event, &toplevel->field)
+    LISTEN(xdg_toplevel->base->surface->events.map,    map,              on_map);
+    LISTEN(xdg_toplevel->base->surface->events.unmap,  unmap,            on_unmap);
+    LISTEN(xdg_toplevel->base->surface->events.commit, commit,           on_commit);
+    LISTEN(xdg_toplevel->events.destroy,               destroy,          on_destroy);
+    LISTEN(xdg_toplevel->events.request_move,          request_move,     on_request_move);
+    LISTEN(xdg_toplevel->events.request_resize,        request_resize,   on_request_resize);
+    LISTEN(xdg_toplevel->events.request_maximize,      request_maximize, on_request_maximize);
 #undef LISTEN
 
     wl_list_insert(&server->toplevels, &toplevel->link);
