@@ -5,6 +5,7 @@ project('kron', 'c',
 
 wayland_scanner = find_program('wayland-scanner')
 wayland_client  = dependency('wayland-client')
+wayland_protos  = dependency('wayland-protocols')
 
 # Генерируем код из xml протокола foreign-toplevel
 foreign_toplevel_xml = 'protocols/wlr-foreign-toplevel-management-unstable-v1.xml'
@@ -20,6 +21,24 @@ ft_code = custom_target('ft-code',
   command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@'],
 )
 
+# Генерируем layer-shell protocol header
+wl_protos_dir = wayland_protos.get_variable('pkgdatadir')
+layer_shell_xml = join_paths(
+  wl_protos_dir, 'staging/ext-session-lock/ext-session-lock-v1.xml'
+)
+
+# wlr-layer-shell из wlroots
+wlroots_dir = run_command('pkg-config', '--variable=pkgdatadir', 'wlroots-0.18',
+  check: false).stdout().strip()
+
+ls_xml = 'protocols/wlr-layer-shell-unstable-v1.xml'
+
+ls_header = custom_target('ls-header',
+  input:  ls_xml,
+  output: 'wlr-layer-shell-unstable-v1-protocol.h',
+  command: [wayland_scanner, 'server-header', '@INPUT@', '@OUTPUT@'],
+)
+
 # ── Зависимости compositor ──
 wlroots        = dependency('wlroots-0.18')
 wayland_server = dependency('wayland-server')
@@ -30,6 +49,8 @@ gtk4        = dependency('gtk4')
 layer_shell = dependency('gtk4-layer-shell-0')
 gio         = dependency('gio-2.0')
 
+compositor_inc = include_directories('compositor', '.')
+
 # ── Compositor (kron) ──
 executable('kron',
   files(
@@ -39,6 +60,9 @@ executable('kron',
     'compositor/toplevel.c',
     'compositor/input.c',
   ),
+  ls_header,
+  include_directories: compositor_inc,
+  c_args: ['-DWLR_USE_UNSTABLE'],
   dependencies: [wlroots, wayland_server, xkbcommon],
   install: true,
 )
