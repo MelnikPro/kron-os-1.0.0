@@ -39,6 +39,14 @@ ls_header = custom_target('ls-header',
   command: [wayland_scanner, 'server-header', '@INPUT@', '@OUTPUT@'],
 )
 
+# xdg-shell protocol header (нужен wlroots)
+xdg_shell_xml = '/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml'
+xdg_shell_header = custom_target('xdg-shell-header',
+  input:  xdg_shell_xml,
+  output: 'xdg-shell-protocol.h',
+  command: [wayland_scanner, 'server-header', '@INPUT@', '@OUTPUT@'],
+)
+
 # ── Зависимости compositor ──
 wlroots        = dependency('wlroots-0.18')
 wayland_server = dependency('wayland-server')
@@ -60,7 +68,7 @@ executable('kron',
     'compositor/toplevel.c',
     'compositor/input.c',
   ),
-  ls_header,
+  [ls_header, xdg_shell_header],
   include_directories: compositor_inc,
   c_args: ['-DWLR_USE_UNSTABLE'],
   dependencies: [wlroots, wayland_server, xkbcommon],
