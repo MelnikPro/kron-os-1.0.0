@@ -150,7 +150,7 @@ void kron_toplevel_begin_move(KronToplevel *toplevel, uint32_t time_msec) {
     server->grabbed_toplevel = toplevel;
     server->cursor_mode = KRON_CURSOR_MOVE;
 
-    double lx, ly;
+    int lx, ly;
     wlr_scene_node_coords(&toplevel->scene_tree->node, &lx, &ly);
     server->grab_x = server->cursor->x - lx;
     server->grab_y = server->cursor->y - ly;
@@ -162,7 +162,7 @@ void kron_toplevel_begin_resize(KronToplevel *toplevel, uint32_t edges, uint32_t
     server->cursor_mode = KRON_CURSOR_RESIZE;
     server->resize_edges = edges;
 
-    double lx, ly;
+    int lx, ly;
     wlr_scene_node_coords(&toplevel->scene_tree->node, &lx, &ly);
     struct wlr_box geo;
     wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo);
