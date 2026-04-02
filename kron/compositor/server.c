@@ -4,6 +4,7 @@
 #include "input.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_subcompositor.h>
@@ -26,7 +27,20 @@ static void on_new_xdg_decoration(struct wl_listener *listener, void *data) {
 static void on_output_mgr_apply(struct wl_listener *listener, void *data) {
     KronServer *server = wl_container_of(listener, server, output_mgr_apply);
     struct wlr_output_configuration_v1 *config = data;
-    bool ok = wlr_output_manager_v1_set_configuration(server->output_mgr, config);
+    /* применяем конфигурацию к каждому выходу */
+    struct wlr_output_configuration_head_v1 *head;
+    bool ok = true;
+    wl_list_for_each(head, &config->heads, link) {
+        struct wlr_output *output = head->state.output;
+        struct wlr_output_state state;
+        wlr_output_state_init(&state);
+        wlr_output_state_set_enabled(&state, head->state.enabled);
+        if (head->state.enabled && head->state.mode)
+            wlr_output_state_set_mode(&state, head->state.mode);
+        if (!wlr_output_commit_state(output, &state))
+            ok = false;
+        wlr_output_state_finish(&state);
+    }
     if (ok) wlr_output_configuration_v1_send_succeeded(config);
     else    wlr_output_configuration_v1_send_failed(config);
     wlr_output_configuration_v1_destroy(config);
@@ -105,7 +119,7 @@ int kron_server_run(KronServer *server) {
         return 1;
     }
 
-    setenv("WAYLAND_DISPLAY", socket, true);
+    setenv("WAYLAND_DISPLAY", socket, 1);
     wlr_log(WLR_INFO, "KRON compositor запущен на %s", socket);
 
     /* Запускаем KRON shell */

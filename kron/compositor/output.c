@@ -1,6 +1,7 @@
 #include "output.h"
 #include "server.h"
 #include <stdlib.h>
+#include <time.h>
 
 static void on_frame(struct wl_listener *listener, void *data) {
     KronOutput *output = wl_container_of(listener, output, frame);
