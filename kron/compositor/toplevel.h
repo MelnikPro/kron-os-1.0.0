@@ -22,7 +22,6 @@ typedef struct kron_toplevel {
     struct wl_listener          request_move;
     struct wl_listener          request_resize;
     struct wl_listener          request_maximize;
-    struct wl_listener          request_fullscreen;
 } KronToplevel;
 
 void kron_toplevel_focus(KronToplevel *toplevel, struct wlr_surface *surface);

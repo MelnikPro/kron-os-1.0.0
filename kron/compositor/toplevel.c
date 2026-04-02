@@ -97,11 +97,6 @@ static void on_request_maximize(struct wl_listener *listener, void *data) {
     wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
 }
 
-static void on_request_fullscreen(struct wl_listener *listener, void *data) {
-    KronToplevel *toplevel = wl_container_of(listener, toplevel, request_fullscreen);
-    wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
-}
-
 /* ── Новый toplevel ── */
 static void on_new_xdg_toplevel(struct wl_listener *listener, void *data) {
     KronServer *server = wl_container_of(listener, server, new_xdg_toplevel);
@@ -123,7 +118,6 @@ static void on_new_xdg_toplevel(struct wl_listener *listener, void *data) {
     LISTEN(xdg_toplevel->events.request_move,             on_request_move);
     LISTEN(xdg_toplevel->events.request_resize,           on_request_resize);
     LISTEN(xdg_toplevel->events.request_maximize,         on_request_maximize);
-    LISTEN(xdg_toplevel->events.request_fullscreen,       on_request_fullscreen);
 #undef LISTEN
 
     wl_list_insert(&server->toplevels, &toplevel->link);

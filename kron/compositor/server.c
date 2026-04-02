@@ -3,8 +3,8 @@
 #include "toplevel.h"
 #include "input.h"
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_subcompositor.h>
