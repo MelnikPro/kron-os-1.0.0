@@ -1,1 +1,1 @@
-im so bored with this thing
+im so tired with this thing
