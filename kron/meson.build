@@ -67,11 +67,12 @@ executable('kron',
     'compositor/output.c',
     'compositor/toplevel.c',
     'compositor/input.c',
+    'compositor/animation.c',
   ),
   [ls_header, xdg_shell_header],
   include_directories: compositor_inc,
   c_args: ['-DWLR_USE_UNSTABLE'],
-  dependencies: [wlroots, wayland_server, xkbcommon],
+  dependencies: [wlroots, wayland_server, xkbcommon, dependency('m')],
   install: true,
 )
 

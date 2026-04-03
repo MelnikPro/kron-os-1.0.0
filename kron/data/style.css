@@ -4,37 +4,39 @@
 #kron-panel {
     background-color: rgba(15, 15, 25, 0.6);
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    animation: panelSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes panelSlideIn {
+    from { margin-top: -36px; opacity: 0; }
+    to   { margin-top: 0;     opacity: 1; }
 }
 
 .panel-button {
     background: transparent;
     color: rgba(255,255,255,0.9);
-    border: none;
-    padding: 3px 12px;
-    border-radius: 5px;
+    border: none; padding: 3px 12px; border-radius: 5px;
+    transition: background 150ms, transform 100ms;
 }
-.panel-button:hover {
-    background: rgba(255,255,255,0.1);
-}
+.panel-button:hover  { background: rgba(255,255,255,0.1); }
+.panel-button:active { transform: scale(0.94); }
 
-.clock {
-    color: rgba(255,255,255,0.9);
-    font-family: monospace;
-    font-size: 12px;
-    padding: 0 8px;
-}
+.clock { color: rgba(255,255,255,0.9); font-family: monospace; font-size: 12px; padding: 0 8px; }
 
 /* ── Taskbar ── */
 .taskbar-item {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.9);
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 5px;
-    padding: 2px 10px;
-    margin: 2px;
-    font-size: 11px;
+    border-radius: 5px; padding: 2px 10px; margin: 2px; font-size: 11px;
+    transition: background 150ms, transform 150ms;
+    animation: taskbarItemIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.taskbar-item:hover  { background: rgba(255,255,255,0.15); }
+@keyframes taskbarItemIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+.taskbar-item:hover  { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
+.taskbar-item:active { transform: scale(0.95); }
 .taskbar-active      { border-color: rgba(82,148,226,0.6); background: rgba(82,148,226,0.2); }
 
 /* ── Dock ── */
@@ -42,65 +44,79 @@
     background-color: rgba(15, 15, 25, 0.55);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 18px;
+    animation: dockSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes dockSlideIn {
+    from { margin-bottom: -80px; opacity: 0; }
+    to   { margin-bottom: 0;     opacity: 1; }
 }
 
 .dock-item {
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    padding: 6px;
-    transition: all 0.15s;
+    background: transparent; border: none;
+    border-radius: 12px; padding: 6px;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 150ms;
 }
-.dock-item:hover {
-    background: rgba(255,255,255,0.12);
-}
+.dock-item:hover  { background: rgba(255,255,255,0.12); transform: translateY(-8px) scale(1.2); }
+.dock-item:active { transform: translateY(-4px) scale(1.05); }
 
 /* ── Лаунчер ── */
 #kron-launcher {
     background-color: rgba(15, 15, 25, 0.75);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 16px;
+    animation: launcherIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes launcherIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
 }
 
 .launcher-search {
     background-color: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.9);
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 15px;
+    border-radius: 10px; padding: 8px 14px; font-size: 15px;
+    transition: border-color 200ms, background 200ms;
+}
+.launcher-search:focus {
+    border-color: rgba(82,148,226,0.6);
+    background: rgba(255,255,255,0.1);
 }
 
 .app-button {
-    background: transparent;
-    color: rgba(255,255,255,0.9);
-    border: none;
-    border-radius: 10px;
-    padding: 8px;
+    background: transparent; color: rgba(255,255,255,0.9);
+    border: none; border-radius: 10px; padding: 8px;
+    transition: background 150ms, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: appIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-.app-button:hover {
-    background: rgba(255,255,255,0.1);
-}
+.app-button:hover  { background: rgba(255,255,255,0.1); transform: scale(1.08); }
+.app-button:active { transform: scale(0.95); }
 
 /* ── Уведомления ── */
 .notification {
     background-color: rgba(20, 20, 35, 0.85);
     color: rgba(255,255,255,0.9);
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 12px 14px;
-    min-width: 300px;
+    border-radius: 12px; padding: 12px 14px; min-width: 300px;
+    animation: notifIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes notifIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
 }
 .notification-title { font-weight: bold; font-size: 13px; }
 .notification-body  { font-size: 12px; color: rgba(255,255,255,0.55); }
 .notification-close {
     background: transparent; border: none;
     color: rgba(255,255,255,0.3); padding: 0 4px; font-size: 11px;
+    transition: color 150ms, transform 150ms;
 }
-.notification-close:hover { color: #ff6b6b; }
+.notification-close:hover  { color: #ff6b6b; }
+.notification-close:active { transform: scale(0.9); }
 
 /* ── Настройки ── */
 .settings-window {
     background-color: rgba(20, 20, 35, 0.9);
     color: rgba(255,255,255,0.9);
+    animation: launcherIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

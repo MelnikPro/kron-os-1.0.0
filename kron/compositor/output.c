@@ -1,16 +1,21 @@
 #include "output.h"
 #include "server.h"
+#include "animation.h"
 #include <stdlib.h>
 #include <time.h>
 
 static void on_frame(struct wl_listener *listener, void *data) {
+    (void)data;
     KronOutput *output = wl_container_of(listener, output, frame);
-    struct wlr_scene *scene = output->server->scene;
-    struct wlr_scene_output *scene_output = wlr_scene_get_scene_output(scene, output->wlr_output);
-    wlr_scene_output_commit(scene_output, NULL);
+    struct wlr_scene_output *scene_output = wlr_scene_get_scene_output(output->server->scene, output->wlr_output);
 
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
+    uint32_t time_ms = (uint32_t)(now.tv_sec * 1000 + now.tv_nsec / 1000000);
+
+    kron_anim_tick(time_ms);
+
+    wlr_scene_output_commit(scene_output, NULL);
     wlr_scene_output_send_frame_done(scene_output, &now);
 }
 

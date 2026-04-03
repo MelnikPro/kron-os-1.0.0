@@ -1,5 +1,6 @@
 #include "toplevel.h"
 #include "server.h"
+#include "animation.h"
 #include <stdlib.h>
 #include <wlr/types/wlr_seat.h>
 #include <wlr/types/wlr_foreign_toplevel_management_v1.h>
@@ -33,6 +34,9 @@ void kron_toplevel_focus(KronToplevel *toplevel, struct wlr_surface *surface) {
 /* ── Обработчики событий toplevel ── */
 static void on_map(struct wl_listener *listener, void *data) {
     KronToplevel *toplevel = wl_container_of(listener, toplevel, map);
+
+    /* Анимация открытия окна */
+    kron_anim_open(toplevel->scene_tree);
 
     /* Регистрируем в foreign-toplevel чтобы taskbar видел окно */
     if (toplevel->server->foreign_toplevel_mgr) {

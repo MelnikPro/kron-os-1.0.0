@@ -94,8 +94,13 @@ function updateDockDots() {
 // ── Лаунчер ──
 function toggleLauncher() {
   const l = document.getElementById('launcher');
-  l.classList.toggle('hidden');
   if (!l.classList.contains('hidden')) {
+    l.classList.add('hiding');
+    setTimeout(() => { l.classList.add('hidden'); l.classList.remove('hiding'); }, 200);
+  } else {
+    l.classList.remove('hidden');
+    l.classList.add('showing');
+    setTimeout(() => l.classList.remove('showing'), 350);
     document.getElementById('search').value = '';
     renderApps(apps);
     setTimeout(() => document.getElementById('search').focus(), 50);
@@ -125,7 +130,7 @@ function openWindow(title, content) {
   const win = document.createElement('div');
   win.className = 'window focused';
   win.id = id;
-  win.style.cssText = `left:${80 + windowCount * 30}px; top:${56 + windowCount * 20}px; width:520px; height:360px; z-index:${++zCounter}`;
+  win.style.cssText = `left:${60 + (windowCount % 4) * 25}px; top:${46 + (windowCount % 4) * 18}px; width:${title === 'Firefox' ? '800' : '520'}px; height:${title === 'Firefox' ? '560' : '360'}px; z-index:${++zCounter}`;
 
   win.innerHTML = `
     <div class="window-titlebar">
@@ -146,15 +151,25 @@ function openWindow(title, content) {
 
 function closeWindow(id) {
   const win = document.getElementById(id);
-  if (win) win.remove();
-  removeTaskbarItem(id);
-  delete openWindows[id];
-  setTimeout(updateDockDots, 100);
+  if (!win) return;
+  win.classList.add('closing');
+  setTimeout(() => {
+    win.remove();
+    removeTaskbarItem(id);
+    delete openWindows[id];
+    setTimeout(updateDockDots, 100);
+  }, 200);
 }
 
 function minimizeWindow(id) {
   const win = document.getElementById(id);
-  if (win) { win.style.display = 'none'; openWindows[id].minimized = true; }
+  if (!win) return;
+  win.classList.add('minimizing');
+  setTimeout(() => {
+    win.style.display = 'none';
+    win.classList.remove('minimizing');
+    openWindows[id].minimized = true;
+  }, 250);
   const item = document.querySelector(`[data-win="${id}"]`);
   if (item) item.classList.remove('active');
 }
@@ -241,7 +256,10 @@ function showNotif(title, body) {
   n.className = 'notif';
   n.innerHTML = `<div class="notif-title">${title}</div><div class="notif-body">${body}</div>`;
   stack.appendChild(n);
-  setTimeout(() => n.remove(), 4000);
+  setTimeout(() => {
+    n.classList.add('hiding');
+    setTimeout(() => n.remove(), 250);
+  }, 4000);
 }
 
 // ── Контент окон ──
@@ -265,15 +283,68 @@ function termContent() {
 }
 
 function browserContent() {
-  return `<div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-      <button style="background:#313244;border:none;color:#cdd6f4;padding:4px 8px;border-radius:4px;cursor:pointer">←</button>
-      <button style="background:#313244;border:none;color:#cdd6f4;padding:4px 8px;border-radius:4px;cursor:pointer">→</button>
-      <input value="https://github.com/MelnikPro/kron-os-1.0.0" style="flex:1;background:#313244;border:1px solid #45475a;color:#cdd6f4;padding:4px 8px;border-radius:4px;font-size:12px">
+  const sites = [
+    { name: 'GitHub', url: 'https://github.com/MelnikPro/kron-os-1.0.0' },
+    { name: 'Google', url: 'https://www.google.com' },
+    { name: 'Wikipedia', url: 'https://en.m.wikipedia.org/wiki/Wayland_(protocol)' },
+  ];
+
+  const tabs = sites.map((s, i) =>
+    `<button onclick="switchTab(${i})" id="tab-${i}" style="background:${i===0?'rgba(255,255,255,0.12)':'transparent'};color:rgba(255,255,255,0.8);border:none;padding:4px 12px;border-radius:6px 6px 0 0;cursor:pointer;font-size:11px;white-space:nowrap">${s.name}</button>`
+  ).join('');
+
+  const iframes = sites.map((s, i) =>
+    `<iframe id="iframe-${i}" src="${s.url}" style="width:100%;height:100%;border:none;display:${i===0?'block':'none'};border-radius:0 0 6px 6px" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>`
+  ).join('');
+
+  return `<div style="display:flex;flex-direction:column;height:100%;gap:0">
+    <div style="display:flex;gap:2px;align-items:center;padding:6px 8px;background:rgba(0,0,0,0.2);border-radius:8px 8px 0 0;flex-wrap:wrap">
+      <button onclick="iframeBack()" style="background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.7);padding:3px 8px;border-radius:4px;cursor:pointer">←</button>
+      <button onclick="iframeForward()" style="background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.7);padding:3px 8px;border-radius:4px;cursor:pointer">→</button>
+      <button onclick="iframeReload()" style="background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.7);padding:3px 8px;border-radius:4px;cursor:pointer">↺</button>
+      <input id="browser-url" value="${sites[0].url}" onkeydown="if(event.key==='Enter')iframeGo(this.value)"
+        style="flex:1;min-width:120px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.15);padding:3px 10px;border-radius:6px;font-size:12px;outline:none">
+      <button onclick="iframeGo(document.getElementById('browser-url').value)" style="background:#5294E2;border:none;color:white;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:12px">Go</button>
     </div>
-    <div style="text-align:center;padding:40px;color:#6c7086">🦊 Firefox — KRON Desktop Environment</div>
+    <div style="display:flex;gap:2px;padding:4px 8px 0;background:rgba(0,0,0,0.15)">${tabs}</div>
+    <div id="browser-frames" style="flex:1;position:relative;background:#fff;border-radius:0 0 8px 8px;overflow:hidden">
+      ${iframes}
+      <div id="browser-blocked" style="display:none;position:absolute;inset:0;background:rgba(20,20,35,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-size:13px;gap:8px">
+        <div style="font-size:32px">🚫</div>
+        <div>This site blocks embedding</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4)">Most sites block iframes for security reasons</div>
+      </div>
+    </div>
   </div>`;
 }
+
+let currentTab = 0;
+const browserSites = [
+  'https://github.com/MelnikPro/kron-os-1.0.0',
+  'https://www.google.com',
+  'https://en.m.wikipedia.org/wiki/Wayland_(protocol)',
+];
+
+function switchTab(i) {
+  document.getElementById('iframe-' + currentTab).style.display = 'none';
+  document.getElementById('tab-' + currentTab).style.background = 'transparent';
+  currentTab = i;
+  document.getElementById('iframe-' + i).style.display = 'block';
+  document.getElementById('tab-' + i).style.background = 'rgba(255,255,255,0.12)';
+  document.getElementById('browser-url').value = browserSites[i];
+}
+
+function iframeGo(url) {
+  if (!url.startsWith('http')) url = 'https://' + url;
+  const iframe = document.getElementById('iframe-' + currentTab);
+  iframe.src = url;
+  document.getElementById('browser-url').value = url;
+  browserSites[currentTab] = url;
+}
+
+function iframeBack()    { document.getElementById('iframe-' + currentTab).contentWindow.history.back(); }
+function iframeForward() { document.getElementById('iframe-' + currentTab).contentWindow.history.forward(); }
+function iframeReload()  { document.getElementById('iframe-' + currentTab).contentWindow.location.reload(); }
 
 function settingsContent() {
   return `<div style="display:flex;flex-direction:column;gap:16px">
