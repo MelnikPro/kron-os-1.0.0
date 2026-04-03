@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KRON Desktop Environment</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Рабочий стол -->
+<div id="desktop">
+
+  <!-- Панель -->
+  <div id="panel">
+    <div id="panel-left">
+      <button class="panel-btn" id="menu-btn" onclick="toggleLauncher()">⬡ KRON</button>
+    </div>
+    <div id="taskbar"></div>
+    <div id="panel-right">
+      <span id="clock"></span>
+      <button class="panel-btn" onclick="togglePower()">⏻</button>
+    </div>
+  </div>
+
+  <!-- Dock (bottom) -->
+  <div id="dock"></div>
+
+  <!-- Лаунчер -->
+  <div id="launcher" class="hidden">
+    <input type="text" id="search" placeholder="Search applications..." oninput="filterApps(this.value)" autofocus>
+    <div id="app-grid"></div>
+  </div>
+
+  <!-- Окна -->
+  <div id="windows-container"></div>
+
+  <!-- Power menu -->
+  <div id="power-menu" class="hidden">
+    <button onclick="alert('Logging out...')">⏻ Log Out</button>
+    <button onclick="alert('Rebooting...')">↺ Reboot</button>
+    <button onclick="alert('Shutting down...')">⏼ Shutdown</button>
+  </div>
+
+</div>
+
+<!-- Экран входа -->
+<div id="lockscreen">
+  <div id="lock-content">
+    <div id="lock-time"></div>
+    <div id="lock-date"></div>
+    <div id="lock-hint">Click to enter KRON</div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

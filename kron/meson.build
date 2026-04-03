@@ -83,6 +83,8 @@ executable('kron-shell',
     'shell/launcher.c',
     'shell/taskbar.c',
     'shell/notifications.c',
+    'shell/desktop.c',
+    'shell/dock.c',
   ),
   [ft_header, ft_code],
   include_directories: include_directories('.'),
@@ -92,3 +94,4 @@ executable('kron-shell',
 
 install_data('data/kron.desktop', install_dir: '/usr/share/wayland-sessions')
 install_data('data/style.css',    install_dir: '/usr/share/kron')
+install_data('data/wallpaper.jpg', install_dir: '/usr/share/kron')

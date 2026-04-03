@@ -1,6 +1,8 @@
 #include "panel.h"
 #include "launcher.h"
 #include "notifications.h"
+#include "desktop.h"
+#include "dock.h"
 #include <gtk/gtk.h>
 
 static void on_activate(GtkApplication *app, gpointer data) {
@@ -12,9 +14,14 @@ static void on_activate(GtkApplication *app, gpointer data) {
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(css);
 
+    const char *wallpaper = g_getenv("KRON_WALLPAPER");
+    if (!wallpaper) wallpaper = "/usr/share/kron/wallpaper.jpg";
+
+    kron_desktop_init(app, wallpaper);
     kron_notifications_init(app);
     kron_launcher_init(app);
     kron_panel_create(app);
+    kron_dock_init(app);
 }
 
 int main(int argc, char *argv[]) {
